@@ -113,6 +113,9 @@
   .wk ul{margin:0;padding-left:18px;color:var(--mute);font-size:14px}.wk li{margin-bottom:4px}
   .wk .wnote{font:13px system-ui,sans-serif;color:var(--mute);border:1px dashed var(--line);border-radius:6px;padding:8px 10px;margin:0 0 14px}
   .wk .x{position:absolute;right:12px;top:10px;margin:0}
+  #menuBtn{position:fixed;left:62px;top:10px;z-index:1100;margin:0;padding:7px 12px;font:600 14px system-ui,sans-serif;background:#241b14ee;color:var(--ink);border:1px solid var(--acc);border-radius:8px;cursor:pointer;box-shadow:0 2px 8px #0008}
+  #menuBtn:hover{background:var(--acc);color:#241b14}
+  .qexit{margin:0 0 0 10px;padding:3px 9px;font:600 12px system-ui,sans-serif;border-radius:6px;text-transform:none;letter-spacing:0}
   @media(max-width:760px){.wk{grid-template-columns:1fr;grid-template-rows:auto 1fr}.wk nav{border-right:0;border-bottom:1px solid var(--line);max-height:34%}.wk main{padding:16px}}
   @media(max-width:760px){.app{grid-template-columns:1fr;grid-template-rows:55% 45%}aside{border-left:0;border-top:1px solid var(--line)}}
 </style>
@@ -142,6 +145,7 @@
 </div>
 <audio id="bgm" src="musica.mp3" loop preload="auto"></audio>
 <button id="snd" title="Música y sonidos" aria-label="Activar o silenciar el sonido">🔊</button>
+<button id="menuBtn" title="Volver al menú principal">☰ Menú</button>
 <div id="title"><div class="tap tcard">
   <div class="kick">LA RECONQUISTA SEGÚN</div>
   <h1 class="tt">Boabdil Al-Zugābī</h1>
@@ -260,7 +264,7 @@ const gl=L.geoJSON(GEO,{
     l.on({
       mouseover:()=>{if(l!==sel)l.setStyle({fillOpacity:.75,weight:2})},
       mouseout:()=>{if(l!==sel)gl.resetStyle(l)},
-      click:()=>pick(k)
+      click:()=>{sfx('select');pick(k)}
     });
   }
 }).addTo(map);
@@ -441,7 +445,8 @@ function yusuf(go){
   card.innerHTML=`<div class="top"><span>Alerta en la frontera</span><span></span></div><div class="yus">${meterHTML()}
    <div style="font-size:56px;margin:8px 0 0">🐎🐎🐎</div><div class="big">¡Llegó Yusuf!</div>
    <p class="hint" style="margin:0 0 16px">Yusuf ibn Tasufín cruza el Estrecho con sus jinetes almorávides. La batalla de Zalaca (1086) ya está a las puertas.</p>
-   <button class="play" id="rep">Rechazar la invasión</button></div>`;
+   <button class="play" id="rep">Rechazar la invasión</button><button class="play" id="rmn" style="background:transparent;color:var(--ink);border-color:var(--line)">☰ Menú principal</button></div>`;
+  card.querySelector('#rmn').onclick=showTitle;
   card.querySelector('#rep').onclick=()=>{ALM.set(0);drawMeters();go()};
 }
 function stars(k){const n=store.get()[k]||0;return n?'<span class="st">'+'★'.repeat(n)+'</span>':''}
@@ -450,20 +455,21 @@ function startQuiz(k){
   const mix=k==='mix';
   let qs=mix?shuf(Object.entries(TRIVIA).flatMap(([r,l])=>l.map(q=>[r,q]))).slice(0,10):shuf(TRIVIA[k]).map(q=>[k,q]);
   QZ={k,qs,i:0,score:0};
-  document.getElementById('quiz').classList.add('open');renderQ();
+  document.getElementById('quiz').classList.add('open');sfx('horn');renderQ();
 }
 function renderQ(){
   const {qs,i,k}=QZ,[r,q]=qs[i],d=DATA[r];
   const card=document.getElementById('qcard');card.style.setProperty('--qc',d.c);
   const opts=shuf(q.slice(1,5).map((t,n)=>[t,n===0]));
-  card.innerHTML=`<div class="top"><span>${k==='mix'?'Reto mixto · '+d.lab:DATA[k].n}</span><span>${i+1} / ${qs.length}</span></div>
+  card.innerHTML=`<div class="top"><span>${k==='mix'?'Reto mixto · '+d.lab:DATA[k].n}</span><span>${i+1} / ${qs.length}<button class="qexit" id="qex">☰ Menú</button></span></div>
    <div class="bar"><i style="width:${i/qs.length*100}%"></i></div><div id="qm">${meterHTML()}</div><h3>${q[0]}</h3>
    <div id="os"></div><div class="fb" id="fb"></div><div id="nx"></div>`;
+  card.querySelector('#qex').onclick=showTitle;
   const os=card.querySelector('#os');
   opts.forEach(([t,ok])=>{const b=document.createElement('button');b.className='opt';b.textContent=t;
     b.onclick=()=>{
       os.querySelectorAll('button').forEach(x=>{x.disabled=true;if(x._ok)x.classList.add('ok')});
-      if(ok){b.classList.add('ok');QZ.score++}else{b.classList.add('bad');ALM.set(Math.min(ALM.n+1,ALM_MAX));drawMeters(true)}
+      if(ok){b.classList.add('ok');QZ.score++;sfx('good')}else{b.classList.add('bad');ALM.set(Math.min(ALM.n+1,ALM_MAX));drawMeters(true);sfx('bad');sfx('hoof')}
       card.querySelector('#fb').innerHTML=(ok?'✅ ¡Correcto! ':'❌ No era esa. ')+q[5];
       card.querySelector('#nx').innerHTML=`<button class="play" style="margin:0">${i+1<qs.length?'Siguiente →':'Ver resultado'}</button>`;
       const go=()=>{QZ.i++;QZ.i<qs.length?renderQ():endQ()};
@@ -507,9 +513,9 @@ function endQ(){
   if(won)fanfare();
   card.innerHTML=`<div class="top"><span>Resultado</span><span></span></div><div style="text-align:center">${won?`<div style="margin:4px 0 8px">${flag(k,96)}</div><div class="big" style="font-size:34px;color:var(--acc)">¡Reconquistado!</div><div class="hint" style="margin-bottom:8px">${DATA[k].n} → hoy ${FLAGN[FLAGOF[k]]}</div>`:''}<div class="big" ${won?'style="font-size:26px"':''}>${score} / ${n}</div>
    <h3 style="margin-bottom:6px">${rank}</h3>${k!=='mix'?`<div class="st" style="font-size:26px;margin-bottom:10px">${'★'.repeat(st)}${'☆'.repeat(3-st)}</div>`:''}
-   <button class="play" id="again">Jugar de nuevo</button><button class="play" id="cl" style="background:transparent;color:var(--ink);border-color:var(--line)">Volver al mapa</button></div>`;
+   <button class="play" id="again">Jugar de nuevo</button><button class="play" id="cl" style="background:transparent;color:var(--ink);border-color:var(--line)">Volver al mapa</button><button class="play" id="mn" style="background:transparent;color:var(--ink);border-color:var(--line)">☰ Menú principal</button></div>`;
   card.querySelector('#again').onclick=()=>startQuiz(k);
-  card.querySelector('#cl').onclick=closeQ;
+  card.querySelector('#cl').onclick=closeQ;card.querySelector('#mn').onclick=showTitle;
 }
 function closeQ(){document.getElementById('quiz').classList.remove('open');if(sel){const k=Object.keys(byId).find(x=>byId[x]===sel);if(k)pick(k)}}
 document.getElementById('quiz').addEventListener('click',e=>{if(e.target.id==='quiz')closeQ()});
@@ -555,7 +561,7 @@ const _as=ALM.set.bind(ALM);ALM.set=v=>{_as(v);refreshCode()};
 function applyState(){updateRec();drawMeters();refreshCode()}
 refreshCode();
 $('cpy').onclick=async e=>{
-  try{await navigator.clipboard.writeText(encodeSave());e.target.textContent='¡Copiado!'}catch(x){e.target.textContent='Cópialo a mano'}
+  try{await navigator.clipboard.writeText(encodeSave());e.target.textContent='¡Copiado!';sfx('ok')}catch(x){e.target.textContent='Cópialo a mano'}
   setTimeout(()=>e.target.textContent='Copiar',1600);
 };
 
@@ -568,16 +574,18 @@ $('snd').onclick=()=>{
   try{localStorage.setItem('iberia1085_mute',muted?'1':'0')}catch(e){}
 };
 function setMusic(mode){
-  const target=mode==='title'?.6:.22;
   clearInterval(setMusic.t);
+  const target=mode==='title'?.6:0;
+  if(mode==='title'&&started){const p=bgm.play();if(p&&p.catch)p.catch(()=>{})}
   setMusic.t=setInterval(()=>{
     const d=target-bgm.volume;
-    if(Math.abs(d)<.02){bgm.volume=target;clearInterval(setMusic.t)}else bgm.volume=Math.max(0,Math.min(1,bgm.volume+Math.sign(d)*.02));
-  },60);
+    if(Math.abs(d)<.03){bgm.volume=target;clearInterval(setMusic.t);if(!target)bgm.pause()}
+    else bgm.volume=Math.max(0,Math.min(1,bgm.volume+Math.sign(d)*.03));
+  },50);
 }
 let started=false;
 $('title').addEventListener('pointerdown',()=>{
-  if(started)return;started=true;
+  if(started)return;started=true;sfx('drum');
   bgm.volume=.6;const p=bgm.play();if(p&&p.catch)p.catch(()=>{});
   $('tpress').style.display='none';$('tmenu').style.display='flex';
 });
@@ -611,7 +619,7 @@ $('bCont').onclick=()=>{
   $('codein').focus();
   if($('useCur'))$('useCur').onclick=()=>{applyState();enterGame()};
 };
-$('mnu').onclick=showTitle;
+$('mnu').onclick=showTitle;$('menuBtn').onclick=showTitle;
 
 // =================== LECTURAS (wiki breve) ===================
 const SRC={
@@ -685,7 +693,7 @@ const WIKI=[
     'Por eso nada de lo que ocurre en 1085 tiene relación directa con él: es una licencia que toma su nombre como símbolo del narrador andalusí que ve cómo cae el mundo de las taifas. El paralelo histórico real de esa mirada es el de ʿAbd Allāh de Granada, que dejó sus memorias en el siglo XI.'],
  rel:'el título del juego.',src:['harvey','levi','dbe']}
 ];
-function renderWiki(i){
+function renderWiki(i){sfx('page');
   const a=WIKI[i];
   $('wkbody').innerHTML=`<h2>${a.t}</h2><p class="wsub">${a.sub}</p>${a.n?`<p class="wnote">${a.n}</p>`:''}${a.p.map(x=>`<p>${x}</p>`).join('')}
    ${a.rel?`<p class="wrel">Relacionado con el juego: ${a.rel}</p>`:''}<h4>Fuentes</h4><ul>${a.src.map(s=>`<li>${SRC[s]}</li>`).join('')}</ul>
@@ -699,6 +707,42 @@ const openWiki=()=>{$('wiki').classList.add('open');renderWiki(0)};
 $('wkx').onclick=()=>$('wiki').classList.remove('open');
 $('wiki').addEventListener('click',e=>{if(e.target.id==='wiki')$('wiki').classList.remove('open')});
 $('bRead').onclick=openWiki;$('rdd').onclick=openWiki;
+
+// =================== SONIDOS INTERACTIVOS (Web Audio, sin archivos) ===================
+function sfx(n){
+  try{
+    const ac=audio();if(!ac||muted)return;
+    const T=ac.currentTime+.01,out=ac.createGain();out.gain.value=.2;out.connect(ac.destination);
+    const tone=(f,t0,d,type,v,f2)=>{const o=ac.createOscillator(),g=ac.createGain();
+      o.type=type||'sine';o.frequency.setValueAtTime(f,T+t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,T+t0+d);
+      g.gain.setValueAtTime(0,T+t0);g.gain.linearRampToValueAtTime(v||1,T+t0+.008);g.gain.exponentialRampToValueAtTime(.001,T+t0+d);
+      o.connect(g);g.connect(out);o.start(T+t0);o.stop(T+t0+d+.02)};
+    const noise=(t0,d,freq,v,q)=>{const b=ac.createBuffer(1,Math.ceil(ac.sampleRate*d),ac.sampleRate),a=b.getChannelData(0);
+      for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;
+      const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();
+      s.buffer=b;f.type='bandpass';f.frequency.value=freq;f.Q.value=q||1;
+      g.gain.setValueAtTime(v,T+t0);g.gain.exponentialRampToValueAtTime(.001,T+t0+d);
+      s.connect(f);f.connect(g);g.connect(out);s.start(T+t0)};
+    switch(n){
+      case 'click':tone(720,0,.06,'triangle',.7,430);break;
+      case 'ok':tone(660,0,.08,'triangle',.6);tone(990,.07,.1,'triangle',.6);break;
+      case 'select':tone(150,0,.18,'sine',1.1,80);tone(900,0,.05,'triangle',.3);noise(0,.05,2500,.25,2);break;
+      case 'drum':tone(120,0,.3,'sine',1.4,45);noise(0,.06,1800,.4,1);break;
+      case 'horn':tone(196,0,.28,'sawtooth',.35);tone(262,.22,.4,'sawtooth',.35);break;
+      case 'good':tone(659,0,.14,'sine',.9);tone(988,.1,.3,'sine',.9);tone(1318,.1,.35,'triangle',.25);break;
+      case 'bad':tone(150,0,.28,'square',.45,85);tone(70,0,.22,'sine',1.1,45);break;
+      case 'hoof':[0,.09,.18,.36,.45,.54].forEach(t0=>noise(t0+.15,.07,260,.9,3));break;
+      case 'page':noise(0,.22,3200,.35,.6);noise(.05,.15,1500,.2,.8);break;
+    }
+  }catch(e){}
+}
+// cualquier botón suena al pulsarse (las respuestas del quiz tienen su propio sonido)
+document.addEventListener('click',e=>{
+  const b=e.target.closest&&e.target.closest('button');
+  if(!b||b.classList.contains('opt')||b.id==='snd'||b.id==='bNew'||b.id==='bCont'||b.id==='bRead')return;
+  sfx('click');
+},true);
+['bNew','bCont','bRead'].forEach(id=>$(id).addEventListener('click',()=>sfx('drum'),true));
 </script>
 </body>
 </html>
