@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Iberia hacia 1085</title>
+<title>La reconquista según Boabdil Al-Zugābī</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <style>
   :root{--bg:#1a1410;--panel:#241b14;--ink:#f1e8d8;--mute:#b3a48c;--acc:#d9a441;--line:#42352a}
@@ -74,6 +74,46 @@
   .rec-b small{color:var(--mute);font:13px system-ui,sans-serif}
   .lbl.rec{color:#5b3a00;font-style:normal;font-size:12px}
   .st{color:var(--acc);letter-spacing:2px}
+  /* pantalla de título, lecturas y control de sonido */
+  #title{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;
+    background:radial-gradient(ellipse at 50% 25%,#5a3516 0,#1a1008 78%)}
+  #title.hide{display:none}
+  .tcard{width:min(660px,100%)!important;text-align:center;color:#2a1a0e;padding:48px 22px 34px!important;max-height:none!important}
+  .tcard .kick{font:700 13px Georgia,serif;letter-spacing:.32em;color:#8a2c1f;margin:6px 0 4px}
+  .tcard h1.tt{font:700 clamp(32px,7vw,52px)/1.05 Georgia,serif;letter-spacing:.01em;margin:0 0 6px;color:#2a1a0e;text-transform:none;text-shadow:0 1px 0 #fff7}
+  .tcard .tag2{font:italic 17px Georgia,serif;color:#4a3520;margin:0 0 6px}
+  .tcard img.tc{height:min(210px,26vh);width:auto;margin:6px auto 4px;display:block;filter:drop-shadow(0 3px 3px #0006)}
+  .tbtn{display:block;width:min(340px,100%);margin:0 auto 10px;padding:12px 14px;font:700 17px Georgia,serif;letter-spacing:.06em;background:#8a2c1f;color:#f6ead0;border:2px solid #2a1a0e;border-radius:6px;cursor:pointer;box-shadow:0 3px 0 #2a1a0e}
+  .tbtn:hover{background:#a3382a;color:#fff}.tbtn.alt{background:#2f4a6e}.tbtn.alt:hover{background:#3d5f8f}
+  #tmenu{display:none;flex-direction:column;margin-top:8px}
+  #tpress{font:italic 18px Georgia,serif;color:#6b2418;cursor:pointer;margin-top:10px;animation:blink 1.6s infinite}
+  @keyframes blink{50%{opacity:.35}}
+  #tpanel{max-width:420px;margin:6px auto 0;text-align:left;font:15px system-ui,sans-serif;color:#2a1a0e}
+  #tpanel .pbox{background:#f3e7c7;border:2px solid #2a1a0e;border-radius:8px;padding:12px}
+  #tpanel input{width:100%;font:700 20px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;text-align:center;padding:10px;border:2px solid #2a1a0e;border-radius:6px;background:#fff;color:#2a1a0e}
+  #tpanel .msg{min-height:20px;margin:6px 0;color:#8a2c1f;font-weight:600}
+  #tpanel button,#codebox button{font:600 14px system-ui,sans-serif;padding:7px 12px;margin:4px 6px 0 0;border:2px solid #2a1a0e;border-radius:6px;background:#e8c15a;color:#2a1a0e;cursor:pointer}
+  #tpanel button.sec{background:transparent}
+  #tpanel code,#codeval{font:700 17px ui-monospace,Menlo,monospace;letter-spacing:.1em}
+  #snd{position:fixed;right:14px;bottom:14px;z-index:4000;width:44px;height:44px;border-radius:50%;font-size:20px;padding:0;margin:0;background:#241b14cc;border:1px solid var(--acc);color:var(--ink)}
+  #codebox{margin:10px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#0003}
+  #codebox small{display:block;color:var(--mute);margin-bottom:4px;font:12px system-ui,sans-serif}
+  #codebox button{background:transparent;color:var(--ink);border:1px solid var(--line);padding:4px 10px}
+  #wiki{position:fixed;inset:0;z-index:3500;background:#000c;display:none;align-items:center;justify-content:center;padding:14px}
+  #wiki.open{display:flex}
+  .wk{display:grid;grid-template-columns:230px 1fr;width:min(960px,100%);height:min(640px,94vh);background:var(--panel);border:2px solid #2a1a0e;border-radius:8px;overflow:hidden}
+  .wk nav{background:#1b140e;border-right:1px solid var(--line);overflow:auto;padding:10px}
+  .wk nav h3{font:700 12px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:4px 4px 8px}
+  .wk nav button{display:block;width:100%;text-align:left;margin:0 0 4px;font:14px/1.3 Georgia,serif;border-color:transparent}
+  .wk nav button.on{border-color:var(--acc);background:#ffffff0d}
+  .wk main{overflow:auto;padding:22px 26px 28px;position:relative}
+  .wk main h2{margin:0 0 2px;font-size:27px}.wk .wsub{color:var(--mute);font-style:italic;margin:0 0 14px}
+  .wk main p{margin:0 0 12px}.wk .wrel{font:14px system-ui,sans-serif;color:var(--acc)}
+  .wk h4{font:700 12px system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:18px 0 6px;border-top:1px solid var(--line);padding-top:12px}
+  .wk ul{margin:0;padding-left:18px;color:var(--mute);font-size:14px}.wk li{margin-bottom:4px}
+  .wk .wnote{font:13px system-ui,sans-serif;color:var(--mute);border:1px dashed var(--line);border-radius:6px;padding:8px 10px;margin:0 0 14px}
+  .wk .x{position:absolute;right:12px;top:10px;margin:0}
+  @media(max-width:760px){.wk{grid-template-columns:1fr;grid-template-rows:auto 1fr}.wk nav{border-right:0;border-bottom:1px solid var(--line);max-height:34%}.wk main{padding:16px}}
   @media(max-width:760px){.app{grid-template-columns:1fr;grid-template-rows:55% 45%}aside{border-left:0;border-top:1px solid var(--line)}}
 </style>
 </head>
@@ -91,12 +131,31 @@
       <div class="grp">Reinos y condados cristianos</div><div id="lgC"></div>
       <div class="grp">Taifas musulmanas (al-Ándalus)</div><div id="lgM"></div>
       <div class="grp">Otros</div><div id="lgO"></div>
+      <div class="grp">Partida</div>
+      <div id="codebox"><small>Tu código de partida (guárdalo para continuar):</small><span id="codeval">—</span><br>
+        <button id="cpy">Copiar</button><button id="mnu">☰ Menú principal</button><button id="rdd">📜 Lecturas</button></div>
       <div class="grp">Capa de relieve</div>
       <button data-l="sh" class="on">Sombreado</button><button data-l="topo">Topográfico</button><button data-l="sat">Satélite</button>
       <button id="tg" class="on">Ver territorios</button>
     </div>
   </aside>
 </div>
+<audio id="bgm" src="musica.mp3" loop preload="auto"></audio>
+<button id="snd" title="Música y sonidos" aria-label="Activar o silenciar el sonido">🔊</button>
+<div id="title"><div class="tap tcard">
+  <div class="kick">LA RECONQUISTA SEGÚN</div>
+  <h1 class="tt">Boabdil Al-Zugābī</h1>
+  <p class="tag2">Iberia, año 1085 · mapa, trivia y memoria</p>
+  <img class="tc" src="cid.webp" alt="El Cid Campeador a caballo">
+  <div id="tpress">♪ Toca la pantalla para comenzar</div>
+  <div id="tmenu">
+    <button class="tbtn" id="bNew">Juego nuevo</button>
+    <button class="tbtn" id="bCont">Continuar con un código</button>
+    <button class="tbtn alt" id="bRead">Lecturas</button>
+  </div>
+  <div id="tpanel"></div>
+</div></div>
+<div id="wiki"><div class="wk"><nav><h3>Lecturas</h3><div id="wknav"></div></nav><main><button class="x" id="wkx">✕ Cerrar</button><div id="wkbody"></div></main></div></div>
 <div id="quiz"><div class="tap">
   <div class="bubble"><div class="card" id="qcard"></div></div>
   <div class="cid">
@@ -345,7 +404,39 @@ function drawMeters(hit){
   const q=document.getElementById('qm');if(q)q.innerHTML=meterHTML(hit);
 }
 drawMeters();
+// sonido de derrota marcial: redoble de caja, marcha de timbales y metales graves en menor
+function defeat(){
+  try{
+    const ac=audio();if(!ac||muted)return;
+    const T=ac.currentTime+.05;
+    const out=ac.createGain();out.gain.value=.34;out.connect(ac.destination);
+    const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1100;lp.connect(out);
+    const nb=ac.createBuffer(1,ac.sampleRate*.2,ac.sampleRate),d=nb.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const snare=(t,v)=>{const s=ac.createBufferSource(),g=ac.createGain(),hp=ac.createBiquadFilter();
+      s.buffer=nb;hp.type='highpass';hp.frequency.value=1500;
+      g.gain.setValueAtTime(v,T+t);g.gain.exponentialRampToValueAtTime(.001,T+t+.09);
+      s.connect(hp);hp.connect(g);g.connect(out);s.start(T+t);};
+    const drum=(t,v,len)=>{const o=ac.createOscillator(),g=ac.createGain();
+      o.type='sine';o.frequency.setValueAtTime(130,T+t);o.frequency.exponentialRampToValueAtTime(42,T+t+.22);
+      g.gain.setValueAtTime(v,T+t);g.gain.exponentialRampToValueAtTime(.001,T+t+len);
+      o.connect(g);g.connect(out);o.start(T+t);o.stop(T+t+len+.05);};
+    const horn=(f,t,len,v)=>[1,2.003,.5].forEach((m,j)=>{const o=ac.createOscillator(),g=ac.createGain();
+      o.type=j==1?'square':'sawtooth';o.frequency.value=f*m;
+      g.gain.setValueAtTime(0,T+t);g.gain.linearRampToValueAtTime(v*(j==1?.35:1),T+t+.03);
+      g.gain.setValueAtTime(v*(j==1?.35:1),T+t+len*.75);g.gain.exponentialRampToValueAtTime(.001,T+t+len+.15);
+      o.connect(g);g.connect(lp);o.start(T+t);o.stop(T+t+len+.2);});
+    // redoble de caja que va creciendo
+    for(let i=0;i<14;i++)snare(i*.075,.25+i*.035);
+    // marcha: tambor + cuerno con ritmo punteado (do menor descendente)
+    const R=[[196,1.1,.22],[196,1.4,.12],[185,1.6,.3],[165,2.0,.22],[165,2.3,.12],[147,2.5,.3],[131,3.0,.22],[131,3.3,.12],[98,3.5,1.4]];
+    R.forEach(([f,t,l],i)=>{horn(f,t,l,.55);horn(f*1.189,t,l,.3);drum(t,.9,.35);if(i%3==0)snare(t,.5)});
+    // golpe final: tambor profundo y acorde menor sostenido
+    drum(3.5,1.3,1.6);drum(3.8,.9,1.2);horn(65.4,3.5,1.4,.6);
+  }catch(e){console.warn('defeat',e)}
+}
 function yusuf(go){
+  defeat();
   const card=document.getElementById('qcard');card.style.setProperty('--qc','#8f1d1d');
   card.innerHTML=`<div class="top"><span>Alerta en la frontera</span><span></span></div><div class="yus">${meterHTML()}
    <div style="font-size:56px;margin:8px 0 0">🐎🐎🐎</div><div class="big">¡Llegó Yusuf!</div>
@@ -391,7 +482,7 @@ function audio(){
 ['pointerdown','keydown','touchstart'].forEach(ev=>addEventListener(ev,()=>{try{audio()}catch(e){}},{passive:true}));
 function fanfare(){
   try{
-    const ac=audio();if(!ac)return;
+    const ac=audio();if(!ac||muted)return;
     const out=ac.createGain();out.gain.value=.22;out.connect(ac.destination);
     const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2400;lp.connect(out);
     // [frecuencia Hz, inicio s, duración s]
@@ -423,6 +514,191 @@ function endQ(){
 function closeQ(){document.getElementById('quiz').classList.remove('open');if(sel){const k=Object.keys(byId).find(x=>byId[x]===sel);if(k)pick(k)}}
 document.getElementById('quiz').addEventListener('click',e=>{if(e.target.id==='quiz')closeQ()});
 document.getElementById('mix').onclick=()=>startQuiz('mix');
+
+// =================== PARTIDA: código de progreso ===================
+const $=id=>document.getElementById(id);
+const ORDER=Object.keys(DATA);
+const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+const MASK=0x1B5C9A3E7Dn&((1n<<37n)-1n);
+function encodeSave(){
+  const s=store.get();let v=0n;
+  ORDER.forEach(k=>{v=(v<<2n)|BigInt(Math.min(3,s[k]||0))});
+  v=(v<<3n)|BigInt(Math.min(ALM_MAX,ALM.n));
+  v^=MASK;
+  let all=(v<<8n)|(v%251n),out='';
+  for(let i=0;i<9;i++){out=B32[Number(all&31n)]+out;all>>=5n}
+  return out.slice(0,4)+'-'+out.slice(4,8)+'-'+out.slice(8);
+}
+function decodeSave(str){
+  const t=String(str).toUpperCase().replace(/[^0-9A-Z]/g,'').replace(/O/g,'0').replace(/[IL]/g,'1');
+  if(t.length!==9)return null;
+  let all=0n;
+  for(const ch of t){const i=B32.indexOf(ch);if(i<0)return null;all=(all<<5n)|BigInt(i)}
+  let v=all>>8n;
+  if(v>=(1n<<37n)||v%251n!==(all&255n))return null;
+  v^=MASK;
+  const alm=Number(v&7n);v>>=3n;
+  if(alm>ALM_MAX)return null;
+  const stars={};
+  for(let i=ORDER.length-1;i>=0;i--){stars[ORDER[i]]=Number(v&3n);v>>=2n}
+  return{stars,alm};
+}
+store.load=function(stars){
+  Object.keys(mem).forEach(k=>delete mem[k]);
+  const o={};ORDER.forEach(k=>{if(stars[k]){o[k]=stars[k];mem[k]=stars[k]}});
+  try{localStorage.setItem('iberia1085',JSON.stringify(o))}catch(e){}
+};
+const hasProgress=()=>ORDER.some(k=>store.get()[k])||ALM.n>0;
+function refreshCode(){const e=$('codeval');if(e)e.textContent=encodeSave()}
+const _ss=store.set.bind(store);store.set=(k,v)=>{_ss(k,v);refreshCode()};
+const _as=ALM.set.bind(ALM);ALM.set=v=>{_as(v);refreshCode()};
+function applyState(){updateRec();drawMeters();refreshCode()}
+refreshCode();
+$('cpy').onclick=async e=>{
+  try{await navigator.clipboard.writeText(encodeSave());e.target.textContent='¡Copiado!'}catch(x){e.target.textContent='Cópialo a mano'}
+  setTimeout(()=>e.target.textContent='Copiar',1600);
+};
+
+// =================== MÚSICA Y PANTALLA DE TÍTULO ===================
+const bgm=$('bgm');let muted=false;
+try{muted=localStorage.getItem('iberia1085_mute')==='1'}catch(e){}
+bgm.muted=muted;$('snd').textContent=muted?'🔇':'🔊';
+$('snd').onclick=()=>{
+  muted=!muted;bgm.muted=muted;$('snd').textContent=muted?'🔇':'🔊';
+  try{localStorage.setItem('iberia1085_mute',muted?'1':'0')}catch(e){}
+};
+function setMusic(mode){
+  const target=mode==='title'?.6:.22;
+  clearInterval(setMusic.t);
+  setMusic.t=setInterval(()=>{
+    const d=target-bgm.volume;
+    if(Math.abs(d)<.02){bgm.volume=target;clearInterval(setMusic.t)}else bgm.volume=Math.max(0,Math.min(1,bgm.volume+Math.sign(d)*.02));
+  },60);
+}
+let started=false;
+$('title').addEventListener('pointerdown',()=>{
+  if(started)return;started=true;
+  bgm.volume=.6;const p=bgm.play();if(p&&p.catch)p.catch(()=>{});
+  $('tpress').style.display='none';$('tmenu').style.display='flex';
+});
+function enterGame(){
+  $('title').classList.add('hide');setMusic('game');
+  map.invalidateSize();map.fitBounds(IB,{animate:false});
+}
+function showTitle(){
+  $('quiz').classList.remove('open');$('tpanel').innerHTML='';
+  $('title').classList.remove('hide');setMusic('title');
+}
+function newGame(){store.load({});ALM.set(0);applyState();enterGame()}
+$('bNew').onclick=()=>{
+  if(!hasProgress())return newGame();
+  $('tpanel').innerHTML=`<div class="pbox"><b>Ya tienes una partida.</b><br>Su código es <code>${encodeSave()}</code>. Si empiezas de nuevo se borrará el avance de este navegador.<br>
+   <button id="yes">Empezar de nuevo</button><button class="sec" id="no">Cancelar</button></div>`;
+  $('yes').onclick=newGame;$('no').onclick=()=>$('tpanel').innerHTML='';
+};
+$('bCont').onclick=()=>{
+  const cur=hasProgress()?`<div style="margin-top:10px">Partida guardada en este navegador: <code>${encodeSave()}</code><br><button class="sec" id="useCur">Continuar con ella</button></div>`:'';
+  $('tpanel').innerHTML=`<div class="pbox"><b>Escribe tu código de partida</b><br><br>
+   <input id="codein" placeholder="XXXX-XXXX-X" maxlength="14" autocomplete="off" spellcheck="false">
+   <div class="msg" id="cmsg"></div><button id="go">Cargar partida</button><button class="sec" id="cc">Cancelar</button>${cur}</div>`;
+  const go=()=>{
+    const r=decodeSave($('codein').value);
+    if(!r){$('cmsg').textContent='Ese código no es válido. Revísalo e inténtalo de nuevo.';return}
+    store.load(r.stars);ALM.set(r.alm);applyState();enterGame();
+  };
+  $('go').onclick=go;$('cc').onclick=()=>$('tpanel').innerHTML='';
+  $('codein').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+  $('codein').focus();
+  if($('useCur'))$('useCur').onclick=()=>{applyState();enterGame()};
+};
+$('mnu').onclick=showTitle;
+
+// =================== LECTURAS (wiki breve) ===================
+const SRC={
+ reilly:'Bernard F. Reilly, <i>The Kingdom of León-Castilla under King Alfonso VI, 1065–1109</i> (Princeton University Press, 1988).',
+ martinez:'Gonzalo Martínez Díez, <i>Alfonso VI. Señor del Cid, conquistador de Toledo</i> (Temas de Hoy, 2003).',
+ ocall:'Joseph F. O’Callaghan, <i>A History of Medieval Spain</i> (Cornell University Press, 1975).',
+ wass:'David J. Wasserstein, <i>The Rise and Fall of the Party-Kings: Politics and Society in Islamic Spain, 1002–1086</i> (Princeton University Press, 1985).',
+ kennedy:'Hugh Kennedy, <i>Muslim Spain and Portugal: A Political History of al-Andalus</i> (Longman, 1996).',
+ fletcher:'Richard Fletcher, <i>The Quest for El Cid</i> (Oxford University Press, 1989).',
+ mpidal:'Ramón Menéndez Pidal, <i>La España del Cid</i> (Espasa-Calpe, 1929).',
+ hr:'<i>Historia Roderici</i> (siglo XII), ed. Emma Falque, Corpus Christianorum Continuatio Mediaeualis 71 (Brepols).',
+ pmc:'<i>Cantar de mio Cid</i> (h. 1200), ed. Alberto Montaner, Real Academia Española (2011).',
+ ubieto:'Antonio Ubieto Arteta, <i>Historia de Aragón. La formación territorial</i> (Anubar, 1981).',
+ salrach:'Josep M. Salrach, «El procés de feudalització (segles III–XII)», en <i>Història de Catalunya</i>, vol. II (Edicions 62, 1987).',
+ mattoso:'José Mattoso, <i>Identificação de um País. Ensaio sobre as origens de Portugal, 1096–1325</i> (Editorial Estampa, 1985).',
+ levi:'<i>El siglo XI en 1.ª persona: las «Memorias» de ʿAbd Allāh, último rey zirí de Granada</i>, trad. E. Lévi-Provençal y E. García Gómez (Alianza Editorial, 1980).',
+ harvey:'L. P. Harvey, <i>Islamic Spain, 1250 to 1500</i> (University of Chicago Press, 1990).',
+ lagar:'Vincent Lagardère, <i>Les Almoravides jusqu’au règne de Yūsuf b. Tāšfīn (1039–1106)</i> (L’Harmattan, 1989).',
+ dbe:'Real Academia de la Historia, <i>Diccionario Biográfico electrónico</i>: <a href="https://dbe.rah.es" target="_blank" rel="noopener" style="color:var(--acc)">dbe.rah.es</a>.',
+ gomez:'Emilio García Gómez, <i>Poemas arábigoandaluces</i> (Espasa-Calpe, Colección Austral).'
+};
+const WIKI=[
+{t:'Alfonso VI y la toma de Toledo (1085)',sub:'Reino de León y Castilla',
+ p:['Alfonso VI fue rey de León desde 1065, de Castilla desde 1072, tras la muerte de su hermano Sancho II durante el cerco de Zamora, y de Galicia desde 1073. Reunió así los dominios de su padre, Fernando I, y se tituló «emperador de toda Hispania».',
+    'Aprovechó la debilidad de las taifas, que le pagaban parias, para presionar a Toledo, gobernada por al-Qádir. La ciudad se rindió el 25 de mayo de 1085 mediante capitulación. Al-Qádir recibió Valencia como compensación y la frontera cristiana pasó del Duero al Tajo.',
+    'Las condiciones pactadas, que respetaban en principio la mezquita mayor, se rompieron en 1087, cuando la reina Constanza y el arzobispo Bernardo de Sédirac la ocuparon en ausencia del rey.'],
+ rel:'trivia de León y Castilla, Valencia y la frontera de La Mancha.',src:['reilly','martinez','ocall']},
+{t:'Las taifas y las parias',sub:'Al-Ándalus tras el califato',
+ p:['El califato de Córdoba se desintegró en 1031 y dejó decenas de pequeños reinos, las taifas. Los historiadores los llaman «reyes de partido». Fueron políticamente frágiles, pero muy brillantes en poesía, ciencia y arquitectura; el palacio de la Aljafería, en Zaragoza, es un ejemplo.',
+    'Para comprar la paz, los reyes de taifas pagaron parias, tributos en oro, a los reyes cristianos. Fernando I y después Alfonso VI las cobraron de Zaragoza, Toledo, Badajoz, Sevilla y otras. Ese oro financió ejércitos y obras eclesiásticas.',
+    'Cuando Toledo cayó en 1085, las taifas comprendieron que pagar ya no bastaba, y buscaron una ayuda militar exterior: los almorávides.'],
+ rel:'todas las taifas del mapa (Zaragoza, Badajoz, Sevilla, Granada, Almería…).',src:['wass','kennedy']},
+{t:'El Cid (Rodrigo Díaz de Vivar)',sub:'Caballero, desterrado y señor de Valencia',
+ p:['Rodrigo Díaz nació hacia 1045 en Vivar, cerca de Burgos, y murió en Valencia en julio de 1099. Sirvió a Sancho II y luego a Alfonso VI, que lo desterró en 1081. Durante ese destierro puso su espada al servicio de los reyes hudíes de Zaragoza, al-Muqtadir y al-Mutamin.',
+    'Se reconcilió con Alfonso VI tras la derrota de Zalaca, pero lo desterró de nuevo en 1089. Conquistó Valencia en 1094 tras un largo asedio y gobernó la ciudad hasta su muerte; su viuda, Jimena, la defendió hasta 1102.',
+    'Su fama viene de textos del siglo XII y del <i>Cantar de mio Cid</i>. «Cid» deriva del árabe <i>sīdī</i> (señor) y «Campeador» es un título por sus victorias en combate.'],
+ rel:'trivia de la taifa de Zaragoza y de Valencia.',src:['fletcher','mpidal','hr','pmc']},
+{t:'Los almorávides y Zalaca (1086)',sub:'La llegada de Yusuf ibn Tasufín',
+ p:['Los almorávides eran un movimiento bereber de reforma religiosa, nacido en el Sáhara y con capital en Marrakech. Su jefe, Yusuf ibn Tasufín, fue llamado por las taifas de Sevilla, Badajoz y Granada tras la caída de Toledo.',
+    'Cruzó el Estrecho en 1086 y derrotó a Alfonso VI en Zalaca (Sagrajas), cerca de Badajoz, el 23 de octubre de 1086. Volvió a África, pero regresó en 1090 y fue deponiendo a los reyes de taifas: Granada en 1090, Sevilla en 1091 y Badajoz en 1094.',
+    'Para los reyes cristianos, el fin de las parias y la unión militar de al-Ándalus supuso un cambio de rumbo.'],
+ rel:'el medidor de avance almorávide y el mensaje «¡Llegó Yusuf!».',src:['kennedy','lagar','ocall']},
+{t:'Aragón y Pamplona: Sancho Ramírez',sub:'Un reino pirenaico en expansión',
+ p:['Sancho Ramírez (1063–1094) heredó Aragón y, tras el asesinato de Sancho IV de Pamplona en Peñalén (1076), también la corona navarra. Su reino siguió el modelo de la reforma romana: en 1068 se declaró vasallo del Papa y en su tiempo se adoptó el rito romano.',
+    'Participó en la expedición a Barbastro de 1064, que cayó en manos cristianas y fue perdida al año siguiente, y presionó sobre Huesca, durante cuyo asedio murió en 1094. Su hijo Pedro I tomó la ciudad en 1096 tras la batalla de Alcoraz.'],
+ rel:'trivia de Aragón y Pamplona.',src:['ubieto','ocall']},
+{t:'Los condados catalanes y los Usatges',sub:'Barcelona, Urgell, Pallars, Cerdaña, Besalú y Ampurias',
+ p:['A mediados del siglo XI el conde de Barcelona, Ramón Berenguer I, afirmó su autoridad sobre los demás condados y cobró parias de Lérida y Zaragoza. Su reinado se asocia a los <i>Usatges de Barcelona</i>, una de las primeras compilaciones jurídicas feudales de Europa.',
+    'A su muerte (1076) dejó el condado a sus hijos gemelos. Ramón Berenguer II fue asesinado en 1082 y se sospechó de su hermano, Berenguer Ramón II, apodado «el Fratricida». Desde 1097 gobernó el hijo de la víctima, Ramón Berenguer III.',
+    'Urgell, Pallars, Cerdaña, Besalú y Ampurias mantenían su propia dinastía bajo la influencia de Barcelona.'],
+ rel:'trivia de Barcelona, Urgell, Pallars, Cerdaña-Besalú y Ampurias.',src:['salrach','ocall']},
+{t:'Portucale, Coimbra y Sisnando Davídiz',sub:'El germen de Portugal',
+ p:['Fernando I conquistó Coimbra en 1064 y confió su gobierno a Sisnando Davídiz, un mozárabe que había servido antes al rey de Sevilla. Gobernó la región de Coimbra hasta su muerte, en 1091, como vasallo del rey de León.',
+    'Hacia 1096 Alfonso VI entregó el condado a su yerno, Enrique de Borgoña, casado con su hija Teresa. Su hijo, Afonso Henriques, sería el primer rey de Portugal.'],
+ rel:'trivia del territorio portucalense.',src:['mattoso','reilly']},
+{t:'Al-Mutámid de Sevilla, el rey poeta',sub:'La taifa más poderosa',
+ p:['Al-Mutámid ibn Abbad gobernó Sevilla de 1069 a 1091. Anexionó Córdoba (1078) y Murcia (1078) y convirtió su corte en un centro de poesía. Él mismo fue un poeta notable.',
+    'Pidió ayuda a los almorávides contra Alfonso VI, pero estos acabaron con su reino en 1091. Fue desterrado a Aghmat, en Marruecos, donde murió hacia 1095. Sus versos del exilio son de los más recordados de la poesía arábigo-andaluza.'],
+ rel:'trivia de la taifa de Sevilla.',src:['kennedy','gomez','dbe']},
+{t:'Granada zirí y las memorias de ʿAbd Allāh',sub:'Un rey que cuenta su caída',
+ p:['Los ziríes eran bereberes llegados del norte de África, que gobernaron Granada en el siglo XI. ʿAbd Allāh ibn Buluggīn reinó de 1073 a 1090 e incorporó Málaga.',
+    'Los almorávides lo depusieron en 1090 y lo desterraron a Aghmat. Allí escribió unas memorias, las únicas conservadas de un rey andalusí, en las que cuenta la política de las taifas y su propia caída. Es el testimonio en primera persona más cercano al espíritu de este juego.'],
+ rel:'trivia de las taifas de Granada y Almería.',src:['levi','kennedy']},
+{t:'Reforma gregoriana, Cluny y el rito romano',sub:'Cambios en la Iglesia',
+ p:['En la segunda mitad del siglo XI el Papa Gregorio VII impulsó una reforma que buscaba uniformar la liturgia. En 1080, el concilio de Burgos sustituyó el rito hispánico tradicional por el romano en los reinos de León y Castilla.',
+    'Los monjes de Cluny, protegidos por los reyes y financiados en parte con las parias, ocuparon abadías y sedes episcopales. Bernardo de Sédirac, monje cluniacense, fue el primer arzobispo de Toledo tras la conquista. El Camino de Santiago, por su parte, fue la vía de entrada de gentes e ideas francesas.'],
+ rel:'trivia de León y Castilla y de Aragón y Pamplona.',src:['reilly','ocall']},
+{t:'Sobre el título: ¿quién fue Boabdil?',sub:'Una licencia literaria',
+ n:'Aviso: este juego está ambientado en 1085, pero su título evoca a un personaje de casi cuatro siglos después.',
+ p:['Muhammad XII (hacia 1460–1527), llamado Boabdil (de Abū ʿAbd Allāh), fue el último emir nazarí de Granada. Entregó la ciudad a los Reyes Católicos el 2 de enero de 1492. Sus enemigos lo apodaron <i>al-Zughaybī</i> (el Desdichado, «el Zogoybi»).',
+    'Por eso nada de lo que ocurre en 1085 tiene relación directa con él: es una licencia que toma su nombre como símbolo del narrador andalusí que ve cómo cae el mundo de las taifas. El paralelo histórico real de esa mirada es el de ʿAbd Allāh de Granada, que dejó sus memorias en el siglo XI.'],
+ rel:'el título del juego.',src:['harvey','levi','dbe']}
+];
+function renderWiki(i){
+  const a=WIKI[i];
+  $('wkbody').innerHTML=`<h2>${a.t}</h2><p class="wsub">${a.sub}</p>${a.n?`<p class="wnote">${a.n}</p>`:''}${a.p.map(x=>`<p>${x}</p>`).join('')}
+   ${a.rel?`<p class="wrel">Relacionado con el juego: ${a.rel}</p>`:''}<h4>Fuentes</h4><ul>${a.src.map(s=>`<li>${SRC[s]}</li>`).join('')}</ul>
+   <p class="wnote" style="margin-top:16px">Resumen de divulgación. Las fechas y detalles pueden variar según el historiador; consulta las fuentes para profundizar.</p>`;
+  document.querySelectorAll('#wknav button').forEach((b,j)=>b.classList.toggle('on',j===i));
+  $('wkbody').parentNode.scrollTop=0;
+}
+$('wknav').innerHTML=WIKI.map((a,i)=>`<button data-i="${i}">${a.t}</button>`).join('');
+document.querySelectorAll('#wknav button').forEach(b=>b.onclick=()=>renderWiki(+b.dataset.i));
+const openWiki=()=>{$('wiki').classList.add('open');renderWiki(0)};
+$('wkx').onclick=()=>$('wiki').classList.remove('open');
+$('wiki').addEventListener('click',e=>{if(e.target.id==='wiki')$('wiki').classList.remove('open')});
+$('bRead').onclick=openWiki;$('rdd').onclick=openWiki;
 </script>
 </body>
 </html>
