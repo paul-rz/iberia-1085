@@ -620,16 +620,23 @@ $('snd').onclick=()=>{
   muted=!muted;bgm.muted=muted;$('snd').textContent=muted?'🔇':'🔊';
   try{localStorage.setItem('iberia1085_mute',muted?'1':'0')}catch(e){}
 };
+let musicMode='title';
 function setMusic(mode){
-  clearInterval(setMusic.t);
-  const target=mode==='title'?.6:0;
-  if(mode==='title'&&started){const p=bgm.play();if(p&&p.catch)p.catch(()=>{})}
-  setMusic.t=setInterval(()=>{
-    const d=target-bgm.volume;
-    if(Math.abs(d)<.03){bgm.volume=target;clearInterval(setMusic.t);if(!target)bgm.pause()}
-    else bgm.volume=Math.max(0,Math.min(1,bgm.volume+Math.sign(d)*.03));
-  },50);
+  musicMode=mode;
+  clearInterval(setMusic.t);clearTimeout(setMusic.k);
+  if(mode==='title'){
+    try{bgm.volume=.6}catch(e){}
+    if(started){const p=bgm.play();if(p&&p.catch)p.catch(()=>{})}
+    return;
+  }
+  // en el celular (iOS) el volumen del <audio> no se puede cambiar: se baja si se puede y se pausa siempre
+  setMusic.t=setInterval(()=>{try{bgm.volume=Math.max(0,bgm.volume-.06)}catch(e){}},50);
+  setMusic.k=setTimeout(()=>{clearInterval(setMusic.t);bgm.pause()},900);
 }
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)bgm.pause();
+  else if(musicMode==='title'&&started&&!$('title').classList.contains('hide')){const p=bgm.play();if(p&&p.catch)p.catch(()=>{})}
+});
 let started=false;
 $('title').addEventListener('pointerdown',()=>{
   if(started)return;started=true;sfx('drum');
