@@ -45,10 +45,10 @@
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16'%3E%3Crect width='32' height='16' fill='%23c9a85a'/%3E%3Cpath d='M0 8L8 0 16 8 8 16Z' fill='%23a33a2a'/%3E%3Cpath d='M16 8L24 0 32 8 24 16Z' fill='%23406088'/%3E%3Ccircle cx='8' cy='8' r='2' fill='%23c9a85a'/%3E%3Ccircle cx='24' cy='8' r='2' fill='%23c9a85a'/%3E%3C/svg%3E") center/32px 16px repeat-x}
   .tap:before{top:6px}.tap:after{bottom:0}
   .bubble{position:relative;min-height:0;display:flex;filter:drop-shadow(0 3px 0 #2a1a0e66)}
-  .bubble .card{max-height:calc(100vh - 24vh - 150px);border:2px solid #2a1a0e;border-top:8px solid var(--qc,var(--acc));border-radius:18px}
-  .bubble:after{content:'';position:absolute;left:84px;bottom:-14px;width:24px;height:24px;background:var(--panel);border-right:2px solid #2a1a0e;border-bottom:2px solid #2a1a0e;transform:rotate(45deg)}
+  .bubble .card{max-height:calc(100vh - 26vh - 150px);border:2px solid #2a1a0e;border-top:8px solid var(--qc,var(--acc));border-radius:18px}
+  .bubble:after{content:'';position:absolute;left:110px;bottom:-14px;width:24px;height:24px;background:var(--panel);border-right:2px solid #2a1a0e;border-bottom:2px solid #2a1a0e;transform:rotate(45deg)}
   .cid{display:flex;align-items:flex-end;gap:12px;margin:10px 0 18px 14px}
-  .cidsvg{height:min(190px,24vh);width:auto;flex:none}
+  .cidsvg{height:min(210px,26vh);width:auto;flex:none;filter:drop-shadow(0 2px 2px #0005)}
   .cap{font:700 14px/1.3 Georgia,serif;letter-spacing:.14em;color:#8a2c1f;text-shadow:0 1px 0 #fff6;padding-bottom:20px}
   .cap small{display:block;font:italic 13px Georgia,serif;letter-spacing:0;color:#4a3520;margin-top:6px}
   .card .top{display:flex;justify-content:space-between;font:600 12px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
@@ -100,63 +100,7 @@
 <div id="quiz"><div class="tap">
   <div class="bubble"><div class="card" id="qcard"></div></div>
   <div class="cid">
-    <svg viewBox="0 0 160 212" role="img" aria-label="El Cid dibujado como en un tapiz medieval" class="cidsvg">
-      <defs>
-        <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"/></filter>
-        <pattern id="mail" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 3 Q1.5 0 3 3 T6 3" fill="none" stroke="#2c4560" stroke-width=".9"/></pattern>
-        <pattern id="thread" width="3" height="3" patternUnits="userSpaceOnUse"><path d="M0 1.5h3" stroke="#000" stroke-opacity=".13" stroke-width=".8"/></pattern>
-      </defs>
-      <g filter="url(#rough)" stroke="#2a1a0e" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
-        <!-- suelo bordado -->
-        <path d="M0 200 Q20 193 40 200 T80 200 T120 200 T160 200 V212 H0Z" fill="#6f8f4a"/>
-        <path d="M10 205l6-4M34 207l6-4M62 205l6-4M92 207l6-4M120 205l6-4M144 207l6-4" stroke="#3f5a2a" stroke-width="1.5" fill="none"/>
-        <!-- capa -->
-        <path d="M54 68 Q28 116 38 168 L104 168 Q116 116 106 68Z" fill="#a3342a"/>
-        <path d="M44 120 Q42 140 46 160M98 120 Q102 140 98 160" stroke="#d96a55" stroke-width="1.6" fill="none"/>
-        <!-- piernas y botas -->
-        <path d="M62 150 L80 150 L75 196 L58 196Z" fill="#3d5f8f"/>
-        <path d="M80 150 L98 150 L102 196 L85 196Z" fill="#3d5f8f"/>
-        <path d="M56 194 H77 L80 204 H50Z" fill="#8a5a2b"/>
-        <path d="M84 194 H105 L112 204 H82Z" fill="#8a5a2b"/>
-        <path d="M60 164h16M84 164h16" stroke="#e0b53c" stroke-width="2" fill="none"/>
-        <!-- espada Tizona -->
-        <path d="M100 118 L122 178" stroke="#2a1a0e" stroke-width="8" fill="none"/>
-        <path d="M100 118 L122 178" stroke="#8a5a2b" stroke-width="4.4" fill="none"/>
-        <path d="M91 114 L106 122" stroke="#e0b53c" stroke-width="4" fill="none"/>
-        <circle cx="89" cy="113" r="3" fill="#e0b53c"/>
-        <!-- cota de malla -->
-        <path d="M56 68 H104 L108 100 L110 158 H50 L52 100Z" fill="#6d89a8"/>
-        <path d="M56 68 H104 L108 100 L110 158 H50 L52 100Z" fill="url(#mail)" stroke="none"/>
-        <path d="M52 110 H108 V117 H52Z" fill="#8a5a2b"/>
-        <rect x="76" y="109.5" width="9" height="9" fill="#e0b53c" stroke-width="1.6"/>
-        <path d="M80 158 V140" stroke-width="1.6" fill="none"/>
-        <!-- brazo derecho señalando -->
-        <path d="M102 76 L126 54" stroke="#2a1a0e" stroke-width="12" fill="none"/>
-        <path d="M102 76 L126 54" stroke="#6d89a8" stroke-width="8" fill="none"/>
-        <path d="M102 76 L126 54" stroke="url(#mail)" stroke-width="8" fill="none"/>
-        <circle cx="128" cy="51" r="5.5" fill="#e8c7a0"/>
-        <path d="M130 47 L135 38" stroke-width="3.2" fill="none"/>
-        <path d="M130 47 L135 38" stroke="#e8c7a0" stroke-width="1.2" fill="none"/>
-        <!-- cabeza -->
-        <path d="M80 72 Q64 70 66 52 Q66 66 80 68 Q94 66 94 52 Q96 70 80 72Z" fill="#e8c7a0" stroke="none"/>
-        <ellipse cx="80" cy="56" rx="12" ry="12" fill="#e8c7a0"/>
-        <path d="M67 58 Q68 82 80 84 Q92 82 93 58 Q87 69 80 69 Q73 69 67 58Z" fill="#4a2c1a"/>
-        <path d="M76 70 Q80 73 84 70" stroke="#e8c7a0" stroke-width="1.8" fill="none"/>
-        <circle cx="74" cy="56" r="1.6" fill="#2a1a0e" stroke="none"/><circle cx="86" cy="56" r="1.6" fill="#2a1a0e" stroke="none"/>
-        <!-- yelmo normando con nasal -->
-        <path d="M65 51 Q66 26 80 14 Q94 26 95 51 Z" fill="#8c9bab"/>
-        <path d="M65 46 H95 V52 H65Z" fill="#e0b53c"/>
-        <path d="M78 52 H82 V66 H78Z" fill="#8c9bab"/>
-        <!-- escudo con cruz -->
-        <path d="M12 84 Q28 74 46 84 L46 118 L29 158 L12 118Z" fill="#e0b53c"/>
-        <path d="M29 80 V152 M13 102 H45" stroke="#a3342a" stroke-width="5" fill="none"/>
-        <circle cx="29" cy="102" r="5" fill="#8a5a2b"/>
-        <path d="M46 98 L56 88" stroke="#2a1a0e" stroke-width="12" fill="none"/>
-        <path d="M46 98 L56 88" stroke="#6d89a8" stroke-width="8" fill="none"/>
-        <circle cx="46" cy="100" r="5" fill="#e8c7a0"/>
-        <path d="M14 96 q15 -8 30 0" stroke="#7a5a10" stroke-width="1.2" fill="none"/>
-      </g>
-    </svg>
+    <img src="cid.webp" alt="El Cid Campeador a caballo, espada en alto" class="cidsvg">
     <div class="cap">HIC RODERICVS<br>DIAZ LOQVITVR<small>El Cid Campeador</small></div>
   </div>
 </div></div>
